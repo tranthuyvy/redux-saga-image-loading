@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from 'react';
+import { connect } from 'react-redux';
+
 import './ImageGrid.css';
 
 const ImageGrid = () => {
@@ -34,4 +36,13 @@ const ImageGrid = () => {
   );
 };
 
-export default ImageGrid;
+const mapStateToProps = ({ isLoading, images, error }) => ({
+  isLoading,
+  images,
+  error
+})
+
+export default connect(
+  mapStateToProps,
+  null
+)(ImageGrid);

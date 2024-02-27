@@ -1,11 +1,15 @@
-import ImageGrid from './components/ImageGrid/ImageGrid';
+import { Provider } from "react-redux";
 
-function App() {
+import ImageGrid from "./components/ImageGrid/ImageGrid";
+import configureStore from "./store";
+const store = configureStore();
+
+const App = () => {
   return (
-    <div className="App">
+    <Provider store={store}>
       <ImageGrid />
-    </div>
+    </Provider>
   );
-}
+};
 
 export default App;
