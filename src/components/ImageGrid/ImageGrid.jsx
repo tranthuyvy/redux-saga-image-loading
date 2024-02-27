@@ -1,48 +1,46 @@
-import React, { useEffect, useState } from 'react';
-import { connect } from 'react-redux';
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 
-import './ImageGrid.css';
+import { loadImages } from "../../actions";
+import "./ImageGrid.css";
 
 const ImageGrid = () => {
-  const [images, setImages] = useState([]);
+  const dispatch = useDispatch();
+  const { isLoading, images, error } = useSelector((state) => ({
+    isLoading: state.isLoading,
+    images: state.images,
+    error: state.error,
+    imageStats: state.imageStats,
+  }));
 
   useEffect(() => {
-    fetch(`https://picsum.photos/v2/list?page=8`)
-      .then(res => res.json())
-      .then(images => {
-        setImages(images);
-      });
-  }, []);
-  console.log(images)
+    dispatch(loadImages());
+  }, [dispatch]);
+
+  const handleLoadMoreImages = () => {
+    if (!isLoading) {
+      dispatch(loadImages());
+    }
+  };
 
   return (
     <div className="content">
       <section className="grid">
-        {images.map(image => (
+        {images.map((image) => (
           <div
             key={image.id}
-            className={`item item-${Math.ceil(
-              image.height / image.width,
-            )}`}
+            className={`item item-${Math.ceil(image.height / image.width)}`}
           >
-            <img
-              src={image.download_url}
-              alt={image.author}
-            />
+            <img src={image.urls.small} alt={image.user.username} />
           </div>
         ))}
       </section>
+      {error && <div className="error">{JSON.stringify(error)}</div>}
+      <button onClick={handleLoadMoreImages} loading={isLoading}>
+        More
+      </button>
     </div>
   );
 };
 
-const mapStateToProps = ({ isLoading, images, error }) => ({
-  isLoading,
-  images,
-  error
-})
-
-export default connect(
-  mapStateToProps,
-  null
-)(ImageGrid);
+export default ImageGrid;

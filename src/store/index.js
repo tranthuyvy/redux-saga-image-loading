@@ -1,12 +1,17 @@
-import { createStore } from "redux";
+import { createStore, applyMiddleware, compose } from "redux";
+import createSagaMiddleware from "redux-saga";
 
 import rootReducer from "../reducers";
+import rootSaga from "../saga";
 
 const configureStore = () => {
+  // create the saga middleware
+  const sagaMiddleware = createSagaMiddleware();
   const store = createStore(
     rootReducer,
-    window.__REDUX_DEVTOOLS_EXTENSION_ && window.__REDUX_DEVTOOLS_EXTENSION_()
+    compose(applyMiddleware(sagaMiddleware))
   );
+  sagaMiddleware.run(rootSaga);
   return store;
 };
 
